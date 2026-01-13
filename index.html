@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            /* IE10+ 备用布局 */
+            display: -ms-flexbox;
+            -ms-flex-direction: column;
+            -ms-flex-pack: center;
+            -ms-flex-align: center;
+            /* IE9及以下备用 */
+            text-align: center;
+        }
+        
+        .container {
+            text-align: center;
+            padding: 20px;
+            /* IE居中备用 */
+            position: relative;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        button {
+            padding: 12px 24px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            /* IE按钮样式修正 */
+            overflow: visible;
+        }
+        
+        button:hover {
+            background-color: #45a049;
+        }
+        
+        .tip-text {
+            color: #666;
+            font-size: 14px;
+            max-width: 300px;
+            line-height: 1.5;
+            display: none; /* 默认隐藏 */
+            /* IE动画兼容 */
+            transition: opacity 0.3s ease;
+            -ms-transition: opacity 0.3s ease;
+        }
+        
+        /* IE10及以下特殊样式 */
+        @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+            body {
+                display: block;
+                position: relative;
+            }
+            
+            .container {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                -ms-transform: translate(-50%, -50%);
+            }
+            
+            button {
+                padding: 10px 20px;
+                background-color: #008000; /* IE下更明显的绿色 */
+            }
+        }
+        
+        /* IE9及以下检测 - 条件注释备用 */
+        <!--[if lt IE 10]>
+        <style>
+            body {
+                padding-top: 40%;
+            }
+            .container {
+                position: relative;
+                top: 0;
+                transform: none;
+            }
+        </style>
+        <![endif]-->
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button onclick="safeClose()">关闭窗口</button>
+        <div id="tipText" class="tip-text"></div>
+    </div>
+
+    <script>
+    function safeClose() {
+        var isClosed = false;
+        var tipElement = document.getElementById('tipText');
+        
+        // 清除可能之前的提示
+        tipElement.style.display = 'none';
+        tipElement.innerHTML = '';
+        
+        // 尝试标准关闭
+        if (window.close) {
+            try {
+                window.close();
+                isClosed = true;
+            } catch(e) {
+                // IE可能抛出异常
+                console.log('标准关闭失败:', e);
+            }
+        }
+        
+        // 备用方案：跳转到空白页再关闭
+        setTimeout(function() {
+            if (!isClosed) {
+                try {
+                    window.open('', '_self', '');
+                    window.close();
+                    isClosed = true;
+                } catch(e) {
+                    console.log('备用方案失败:', e);
+                }
+            }
+        }, 100);
+        
+        // 最终检查：如果窗口仍未关闭，显示提示
+        setTimeout(function() {
+            // 如果窗口仍然打开（实际上无法直接检测，这里通过检查document.hidden或focus状态）
+            // 使用一个简单的超时来判断
+            try {
+                // 尝试聚焦窗口，如果成功说明窗口还在
+                window.focus();
+                
+                // 显示提示信息
+                tipElement.innerHTML = "如果窗口没有自动关闭，请手动关闭浏览器标签页。";
+                tipElement.style.display = 'block';
+                tipElement.style.opacity = '1';
+                
+                // IE特定提示
+                if (navigator.userAgent.indexOf('MSIE') !== -1 || 
+                    navigator.appVersion.indexOf('Trident/') > 0) {
+                    tipElement.innerHTML += "<br><small>(IE浏览器可能需要手动关闭)</small>";
+                }
+            } catch(e) {
+                // 如果出错，可能窗口已关闭
+                console.log('窗口可能已关闭');
+            }
+        }, 600); // 给足够的时间尝试关闭
+        
+        // IE特定关闭尝试
+        if (window.navigator.userAgent.indexOf('MSIE') !== -1 || 
+            navigator.appVersion.indexOf('Trident/') > 0) {
+            // IE浏览器额外尝试
+            setTimeout(function() {
+                try {
+                    window.opener = null;
+                    window.open('', '_self');
+                    window.close();
+                } catch(ieError) {
+                    console.log('IE特定关闭失败:', ieError);
+                }
+            }, 200);
+        }
+    }
+    
+    // IE兼容性：添加点击事件监听器的备用方法
+    window.onload = function() {
+        var button = document.querySelector('button');
+        if (button.addEventListener) {
+            // 现代浏览器
+            button.addEventListener('click', safeClose, false);
+        } else if (button.attachEvent) {
+            // IE8及以下
+            button.attachEvent('onclick', safeClose);
+        }
+    };
+    </script>
+</body>
+</html>
