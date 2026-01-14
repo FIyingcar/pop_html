@@ -1,12 +1,11 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>关闭窗口</title>
     <style>
-        /* 重置样式 */
+        /* 基础样式 */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -14,14 +13,13 @@
         }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background-color: #f5f5f7;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
-            line-height: 1.5;
         }
         
         .container {
@@ -29,107 +27,93 @@
             border-radius: 12px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             padding: 30px;
-            max-width: 400px;
+            max-width: 500px;
             width: 100%;
             text-align: center;
         }
         
-        .icon-container {
-            margin-bottom: 20px;
-        }
-        
-        .close-icon {
-            font-size: 48px;
-            color: #4CAF50;
-            margin-bottom: 10px;
-        }
-        
         h1 {
             color: #333;
-            font-size: 1.5rem;
-            margin-bottom: 10px;
+            font-size: 1.8rem;
+            margin-bottom: 25px;
             font-weight: 600;
         }
         
-        .description {
-            color: #666;
-            font-size: 0.95rem;
-            margin-bottom: 25px;
-        }
-        
-        button {
+        /* 按钮样式 */
+        .btn {
             background-color: #4CAF50;
             color: white;
             border: none;
             border-radius: 8px;
-            padding: 14px 28px;
+            padding: 16px 32px;
             font-size: 1.1rem;
             font-weight: 600;
             cursor: pointer;
             width: 100%;
             transition: background-color 0.2s;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
         
-        button:hover {
+        .btn:hover {
             background-color: #45a049;
         }
         
-        button:disabled {
-            background-color: #cccccc;
-            cursor: not-allowed;
+        /* 提示区域样式 */
+        .tips-container {
+            margin-top: 10px;
+            width: 100%;
         }
         
-        .tip-text {
+        .tip {
             color: #666;
-            font-size: 0.9rem;
-            display: none;
-            padding: 15px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            padding: 12px 15px;
             background-color: #f9f9f9;
             border-radius: 8px;
             border-left: 4px solid #ff9800;
-            margin-top: 15px;
-            animation: fadeIn 0.5s ease;
+            margin-bottom: 10px;
+            text-align: left;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .tip:last-child {
+            margin-bottom: 0;
+        }
+        
+        .tip.success {
+            border-left-color: #4CAF50;
+            background-color: #f0f9f0;
+        }
+        
+        .tip.error {
+            border-left-color: #f44336;
+            background-color: #fff0f0;
         }
         
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
-        /* 桌面端特定样式 */
-        @media (min-width: 768px) {
-            .container {
-                padding: 40px;
-                max-width: 450px;
+        /* 横屏适配 */
+        @media (orientation: landscape) and (max-height: 600px) {
+            body {
+                align-items: flex-start;
+                padding-top: 20px;
             }
             
-            button {
+            .container {
+                max-width: 700px;
+            }
+            
+            .btn {
                 width: auto;
                 min-width: 200px;
             }
-            
-            h1 {
-                font-size: 1.8rem;
-            }
         }
         
-        /* 移动端优化 */
-        @media (max-width: 480px) {
-            body {
-                padding: 15px;
-            }
-            
-            .container {
-                padding: 25px 20px;
-            }
-            
-            button {
-                padding: 16px 24px;
-            }
-        }
-        
-        /* 黑暗模式支持 */
+        /* 黑暗模式 */
         @media (prefers-color-scheme: dark) {
             body {
                 background-color: #121212;
@@ -137,177 +121,148 @@
             
             .container {
                 background-color: #1e1e1e;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
             }
             
-            h1, .description {
+            h1 {
                 color: #f0f0f0;
             }
             
-            button {
-                background-color: #2e7d32;
-            }
-            
-            button:hover {
-                background-color: #1b5e20;
-            }
-            
-            .tip-text {
+            .tip {
                 background-color: #252525;
                 color: #b0b0b0;
+            }
+        }
+        
+        /* 移动端优化 */
+        @media (max-width: 480px) {
+            .container {
+                padding: 25px 20px;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .btn {
+                padding: 14px 24px;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="icon-container">
-            <div class="close-icon">✕</div>
+        <h1>关闭当前窗口</h1>
+        <button id="closeBtn" class="btn">点击关闭窗口</button>
+        
+        <div class="tips-container" id="tipsContainer">
+            <!-- 提示信息将在这里显示 -->
         </div>
-        <h1>关闭窗口</h1>
-        <p class="description">点击下方按钮尝试关闭当前窗口</p>
-        <button id="closeBtn">关闭窗口</button>
-        <div id="tipText" class="tip-text"></div>
     </div>
 
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-        var closeBtn = document.getElementById('closeBtn');
-        var tipText = document.getElementById('tipText');
-        var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        const closeBtn = document.getElementById('closeBtn');
+        const tipsContainer = document.getElementById('tipsContainer');
         
-        // 根据设备类型显示不同的初始提示
-        if (isMobile) {
-            document.querySelector('.description').textContent = 
-                '点击下方按钮尝试关闭当前页面（部分手机浏览器可能限制此功能）';
+        // 显示提示函数
+        function showTip(message, type = 'info') {
+            const tip = document.createElement('div');
+            tip.className = `tip ${type}`;
+            tip.textContent = message;
+            
+            // 添加到容器顶部（最新的在最上面）
+            if (tipsContainer.firstChild) {
+                tipsContainer.insertBefore(tip, tipsContainer.firstChild);
+            } else {
+                tipsContainer.appendChild(tip);
+            }
+            
+            // 限制最多显示3条提示
+            while (tipsContainer.children.length > 3) {
+                tipsContainer.removeChild(tipsContainer.lastChild);
+            }
+            
+            // 自动移除旧提示（6秒后）
+            setTimeout(() => {
+                if (tip.parentNode === tipsContainer) {
+                    tip.style.opacity = '0';
+                    tip.style.transition = 'opacity 0.3s';
+                    setTimeout(() => {
+                        if (tip.parentNode === tipsContainer) {
+                            tipsContainer.removeChild(tip);
+                        }
+                    }, 300);
+                }
+            }, 6000);
         }
         
-        closeBtn.addEventListener('click', function() {
-            // 禁用按钮，防止重复点击
-            closeBtn.disabled = true;
-            closeBtn.textContent = '正在关闭...';
-            
-            // 清除之前的提示
-            tipText.style.display = 'none';
-            tipText.textContent = '';
-            
-            // 尝试关闭窗口
-            attemptClose();
-        });
-        
+        // 尝试关闭窗口
         function attemptClose() {
-            var closeAttempted = false;
+            // 显示开始提示
+            showTip('正在尝试关闭窗口...', 'info');
             
-            // 方法1: 标准window.close()
-            if (window.close && !closeAttempted) {
+            // 尝试各种关闭方法
+            let closed = false;
+            
+            // 方法1: 标准关闭
+            if (window.close && !closed) {
                 try {
                     window.close();
-                    closeAttempted = true;
+                    closed = true;
                 } catch(e) {
-                    console.log('标准关闭方法失败:', e.message);
+                    // 继续尝试其他方法
                 }
             }
             
-            // 方法2: 延迟尝试（给第一种方法时间）
-            setTimeout(function() {
-                if (!closeAttempted) {
-                    // 方法3: 跳转到空白页再尝试关闭（某些浏览器需要）
+            // 方法2: 延迟尝试空白页方法
+            setTimeout(() => {
+                if (!closed) {
                     try {
-                        window.open('', '_self');
+                        window.open('', '_self', '');
                         window.close();
-                        closeAttempted = true;
+                        closed = true;
                     } catch(e) {
-                        console.log('空白页方法失败:', e.message);
+                        // 继续尝试其他方法
                     }
                 }
             }, 100);
             
-            // 方法4: 对于IE浏览器
-            if (window.navigator.userAgent.indexOf('MSIE') !== -1 || 
-                navigator.appVersion.indexOf('Trident/') > 0) {
-                setTimeout(function() {
+            // 方法3: 对于移动端，尝试返回
+            setTimeout(() => {
+                if (!closed && window.history.length > 1) {
                     try {
-                        window.opener = null;
-                        window.open('', '_self');
-                        window.close();
-                        closeAttempted = true;
+                        window.history.back();
+                        closed = true;
                     } catch(e) {
-                        console.log('IE特定方法失败:', e.message);
+                        // 继续
                     }
-                }, 200);
-            }
-            
-            // 方法5: 移动端尝试使用history.back()
-            if (isMobile && !closeAttempted) {
-                setTimeout(function() {
-                    try {
-                        if (window.history.length > 1) {
-                            window.history.back();
-                            closeAttempted = true;
-                        }
-                    } catch(e) {
-                        console.log('移动端后退方法失败:', e.message);
-                    }
-                }, 300);
-            }
-            
-            // 最终检查：如果所有方法都失败了，显示提示
-            setTimeout(function() {
-                // 检查窗口是否仍然可用（简单检查）
-                if (window && window.document) {
-                    // 恢复按钮
-                    closeBtn.disabled = false;
-                    closeBtn.textContent = '关闭窗口';
-                    
-                    // 显示提示
-                    showCloseTip();
                 }
-            }, 800);
+            }, 200);
+            
+            // 最终结果检查
+            setTimeout(() => {
+                // 显示通用提示（无论什么浏览器都显示这个）
+                showTip('如果窗口没有自动关闭，请手动关闭此标签页。', 'info');
+                
+                // 添加操作提示
+                showTip('您可以随时再次点击按钮尝试关闭。', 'info');
+            }, 500);
         }
         
-        function showCloseTip() {
-            tipText.textContent = '无法自动关闭窗口，请手动关闭此标签页。';
-            
-            // 根据不同浏览器显示特定提示
-            var userAgent = navigator.userAgent;
-            
-            if (userAgent.indexOf('Chrome') !== -1) {
-                tipText.textContent += ' Chrome浏览器通常只允许关闭由脚本打开的窗口。';
-            } else if (userAgent.indexOf('Firefox') !== -1) {
-                tipText.textContent += ' Firefox浏览器可能限制脚本关闭非脚本打开的窗口。';
-            } else if (userAgent.indexOf('Safari') !== -1 && !isMobile) {
-                tipText.textContent += ' Safari浏览器通常限制脚本关闭窗口。';
-            } else if (isMobile) {
-                tipText.textContent = '手机浏览器通常限制自动关闭功能，请手动返回或关闭此页面。';
-            }
-            
-            tipText.style.display = 'block';
-            
-            // 添加关闭提示的按钮
-            var closeTipBtn = document.createElement('button');
-            closeTipBtn.textContent = '明白了';
-            closeTipBtn.style.marginTop = '10px';
-            closeTipBtn.style.padding = '8px 16px';
-            closeTipBtn.style.fontSize = '0.9rem';
-            closeTipBtn.style.backgroundColor = '#757575';
-            
-            closeTipBtn.addEventListener('click', function() {
-                tipText.style.display = 'none';
-            });
-            
-            tipText.appendChild(document.createElement('br'));
-            tipText.appendChild(closeTipBtn);
-        }
+        // 绑定点击事件
+        closeBtn.addEventListener('click', attemptClose);
         
-        // 添加键盘支持（ESC键尝试关闭）
+        // 键盘支持（ESC键）
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && !closeBtn.disabled) {
+            if (e.key === 'Escape') {
                 closeBtn.click();
             }
         });
         
-        // 初始焦点
-        closeBtn.focus();
+        // 初始提示
+        setTimeout(() => {
+            showTip('点击上方按钮尝试关闭窗口', 'info');
+        }, 500);
     });
     </script>
 </body>
